@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "CHOKIDAR_USEPOLLING=true react-scripts start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@solana/web3.js": "^1.78.4",
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
