@@ -52,12 +52,14 @@ function AddressForm(props: { handler: (address: string) => void }) {
           placeholder="Public Address, e.g. 7C4jsPZpht42Tw6MjXWF56Q5RQUocjBBmciEjDa8HRtp"
           value={values.address}
           onChange={handleAddressInputChange}
-          className='text-slate-800'
+          className='text-slate-800 w-full'
         />
         <br />
-        <button type="submit">
+        <div className='flex flex-col items-center'>
+        <button type="submit" className='my-4 center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded'>
           Check SOL Balance
         </button>
+        </div>
       </form>
     </div>
   );
