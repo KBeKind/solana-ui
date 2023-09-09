@@ -32,15 +32,16 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <main>
-        <div className='m-5 p-5 bg-slate-600 w-1/2'>
+      <main className='flex'>
+        <div className='m-5 p-5 bg-slate-600 flex-initial rounded w-2/5'>
+          <div className='mx-5'>
         {/* the AddressForm handler is set to the addressSubmittedHandler above */}
         <AddressForm handler={addressSubmittedHandler} />
 
         {/* displaying the state variales */}
         <p>{`Address: ${address}`}</p>
         <p>{`Balance: ${balance} SOL`}</p>
-        </div>
+        </div></div>
         </main>
     </div>
   )
