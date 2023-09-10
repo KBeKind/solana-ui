@@ -4,6 +4,7 @@ import type { NextPage } from 'next'
 import { useState } from 'react'
 import AddressForm from './AddressForm'
 import * as Web3 from '@solana/web3.js'
+import { info } from 'console';
 
 //NextPage uses server side rendering for the intial render and has security features
 //defined Home as const to make it more secure
@@ -13,10 +14,13 @@ const Home: NextPage = () => {
   // const [state, setState] = useState(initialState);
   const [balance, setBalance] = useState(0)
   const [address, setAddress] = useState('')
+  const [isExecutable, setisExecutable ] = useState(false);
 
   // addressSubmittedHandler takes an address and sets the state address.  
   const addressSubmittedHandler = (address: string) => {
-    setAddress(address)
+    // try catch to handle if the address is invalid
+    try{
+        setAddress(address)
 
     // sets a new public key based on the address
     const key = new Web3.PublicKey(address)
@@ -28,8 +32,18 @@ const Home: NextPage = () => {
     connection.getBalance(key).then(balance => {
       setBalance(balance / Web3.LAMPORTS_PER_SOL)
     })
+    connection.getAccountInfo(key).then(info => {
+      setisExecutable(info?.executable ?? false);
+    })
+  
   }
-
+   catch(error) {
+      setAddress('');
+      setBalance(0);
+      setisExecutable(false);
+      alert(error);
+  }
+}
   return (
     <div>
       <main className='flex'>
@@ -41,6 +55,7 @@ const Home: NextPage = () => {
         {/* displaying the state variales */}
         <p>{`Address: ${address}`}</p>
         <p>{`Balance: ${balance} SOL`}</p>
+        <p>{`Executable Account: ${isExecutable}`}</p>
         </div></div>
         </main>
     </div>
