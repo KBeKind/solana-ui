@@ -4,7 +4,10 @@ import type { NextPage } from 'next'
 import { useState } from 'react'
 import AddressForm from './AddressForm'
 import * as Web3 from '@solana/web3.js'
-import { info } from 'console';
+import Link from "next/link";
+
+import Dotenv from 'dotenv';
+Dotenv.config()
 
 //NextPage uses server side rendering for the intial render and has security features
 //defined Home as const to make it more secure
@@ -12,9 +15,11 @@ const Home: NextPage = () => {
 
   // useState is a React Hook that lets you add a state variable to your component.
   // const [state, setState] = useState(initialState);
-  const [balance, setBalance] = useState(0)
-  const [address, setAddress] = useState('')
+  const [balance, setBalance] = useState(0);
+  const [address, setAddress] = useState('');
   const [isExecutable, setisExecutable ] = useState(false);
+
+//WALLET ADDRESS LOOKUP
 
   // addressSubmittedHandler takes an address and sets the state address.  
   const addressSubmittedHandler = (address: string) => {
@@ -49,13 +54,20 @@ const Home: NextPage = () => {
       <main className='flex'>
         <div className='m-5 p-5 bg-slate-600 flex-initial rounded w-2/5'>
           <div className='mx-5'>
-        {/* the AddressForm handler is set to the addressSubmittedHandler above */}
+        the AddressForm handler is set to the addressSubmittedHandler above
         <AddressForm handler={addressSubmittedHandler} />
 
         {/* displaying the state variales */}
         <p>{`Address: ${address}`}</p>
         <p>{`Balance: ${balance} SOL`}</p>
         <p>{`Executable Account: ${isExecutable}`}</p>
+        <br />
+        <hr />
+        <br />
+        <Link href="/sendsol" className="m-2">
+               <button className='my-4 center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded'>Send Sol Page</button>
+        </Link>
+
         </div></div>
         </main>
     </div>
