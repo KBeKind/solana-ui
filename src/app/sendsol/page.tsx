@@ -1,77 +1,110 @@
 "use client"; //Had to add "use client;" to allow use of "useState"
 
-import type { NextPage } from 'next'
-import { useState } from 'react'
-import * as Web3 from '@solana/web3.js'
-import SendSolForm from './SendSolForm'
-import Link from "next/link";
+import type { NextPage } from "next";
+import { useState } from "react";
+import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
+import {
+  WalletDisconnectButton,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import * as Web3 from "@solana/web3.js";
+import React, { FC, useCallback } from "react";
+import AddressForm from "./AddressForm";
 
-import Dotenv from 'dotenv';
-Dotenv.config()
-
-//NextPage uses server side rendering for the intial render and has security features
-//defined Home as const to make it more secure
 const Page: NextPage = () => {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction } = useWallet();
 
-  const [receiverBalance, setReceiverBalance] = useState(0);
-  const [receiverAddress, setReceiverAddress] = useState('');
+  const [balance, setBalance] = useState(0);
+  const [anAddress, setAddress] = useState("");
+  const [isExecutable, setisExecutable] = useState(false);
 
-  
-  async function sendSol() {
-    const payer = initializeKeypair()
-    const connection = new Web3.Connection(Web3.clusterApiUrl('devnet'))
-    await connection.requestAirdrop(payer.publicKey, Web3.LAMPORTS_PER_SOL*2)
+  // addressSubmittedHandler takes an address and sets the state address.
+  const addressSubmittedHandler = (address: string) => {
+    // try catch to handle if the address is invalid
+    try {
+      setAddress(address);
 
-    connection.getBalance(payer.publicKey).then(balance => {
-      setReceiverBalance(balance / Web3.LAMPORTS_PER_SOL)
-    })
-    // await sendSol(connection, 0.1*Web3.LAMPORTS_PER_SOL, Web3.Keypair.generate().publicKey, payer)
-}
+      // sets a new public key based on the address
+      const key = new Web3.PublicKey(address);
 
-  function initializeKeypair(): Web3.Keypair {
-    const secret = JSON.parse(process.env.PRIVATE_KEY ?? "") as number[]
-    const secretKey = Uint8Array.from(secret)
-    const keypairFromSecretKey = Web3.Keypair.fromSecretKey(secretKey)
-    return keypairFromSecretKey
-}
+      //creates a new connection to solana network
+      const connection = new Web3.Connection(Web3.clusterApiUrl("devnet"));
+      // gets the balance from the connection using the public key then sets the state balance
+      // the state balance is set in SOL by dividing by lamports per sol.
+      connection.getBalance(key).then((balance) => {
+        setBalance(balance / Web3.LAMPORTS_PER_SOL);
+      });
+      connection.getAccountInfo(key).then((info) => {
+        setisExecutable(info?.executable ?? false);
+      });
+    } catch (error) {
+      setAddress("");
+      setBalance(0);
+      setisExecutable(false);
+      alert(error);
+    }
+  };
 
-const sendFormSubmittedHandler = (address: string) => {
-  // try catch to handle if the address is invalid
-  try {
-    setReceiverAddress(address)
+  const sendSol = useCallback(async () => {
+    if (!publicKey) throw new WalletNotConnectedError();
 
-  // sets a new public key based on the address
-  const key = new Web3.PublicKey(address)
+    const lamports = 100_000_000;
+    const receiverPubKey = new Web3.PublicKey(String(anAddress));
+    const transaction = new Web3.Transaction().add(
+      Web3.SystemProgram.transfer({
+        fromPubkey: publicKey,
+        toPubkey: receiverPubKey,
+        lamports,
+      })
+    );
 
-  //creates a new connection to solana network
-  const connection = new Web3.Connection(Web3.clusterApiUrl('devnet'))
-  }  
-  catch(error) {
-    setReceiverAddress('');
-    setReceiverBalance(0);
-    alert(error);
-}
-}
+    const {
+      context: { slot: minContextSlot },
+      value: { blockhash, lastValidBlockHeight },
+    } = await connection.getLatestBlockhashAndContext();
+
+    const signature = await sendTransaction(transaction, connection, {
+      minContextSlot,
+    });
+
+    await connection.confirmTransaction({
+      blockhash,
+      lastValidBlockHeight,
+      signature,
+    });
+  }, [publicKey, sendTransaction, connection]);
 
   return (
-    <main className='flex'>
-    <div className='m-5 p-5 bg-slate-600 flex-initial rounded w-2/5'>
-      <div className='mx-5'>
+    <div>
+      <main className="flex">
+        <div className="m-5 p-5 bg-slate-600 flex-initial rounded w-2/5">
+          <div className="mx-5">
+            TEST SEND SOL PAGE
+            <WalletMultiButton />
+            <WalletDisconnectButton />
+            <br />
+            <hr />
+            <br />
+            <AddressForm handler={addressSubmittedHandler} />
+            <p>{`Address: ${anAddress}`}</p>
+            <p>{`Balance: ${balance} SOL`}</p>
+            <p>{`Executable Account: ${isExecutable}`}</p>
+            <br />
+            <hr />
+            <br />
+            <button
+              onClick={sendSol}
+              className="my-4 center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Click To Send Sol to the selected wallet
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
 
-    <p>Send Sol to an address</p>
-    <br />
-    <button onClick={sendSol} className='my-4 center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded'>
-      Send Now
-    </button>
-
-      </div>
-    <p>{`Address: ${receiverAddress}`}</p>
-    <p>{`Balance: ${receiverBalance} SOL`}</p>
-  </div>
-</main>
-  )
-}
-
-export default Page
-
-
+export default Page;
