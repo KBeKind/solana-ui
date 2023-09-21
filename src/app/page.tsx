@@ -5,6 +5,7 @@ import { useState } from "react";
 import AddressForm from "./AddressForm";
 import * as Web3 from "@solana/web3.js";
 import Link from "next/link";
+import Hello from "@/components/Hello";
 
 import Dotenv from "dotenv";
 Dotenv.config();
@@ -51,6 +52,7 @@ const Home: NextPage = () => {
       <main className="flex">
         <div className="m-5 p-5 bg-slate-600 flex-initial rounded w-2/5">
           <div className="mx-5">
+            <Hello></Hello>
             the AddressForm handler is set to the addressSubmittedHandler above
             <AddressForm handler={addressSubmittedHandler} />
             {/* displaying the state variales */}
@@ -60,9 +62,14 @@ const Home: NextPage = () => {
             <br />
             <hr />
             <br />
-            <Link href="/sendsol" className="m-2">
+            <Link href="/sendsol" className="m-4">
               <button className="my-4 center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
                 Send Sol Page
+              </button>
+            </Link>
+            <Link href="/startrec" className="m-4">
+              <button className="my-4 center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                Start Receipt Page
               </button>
             </Link>
           </div>
