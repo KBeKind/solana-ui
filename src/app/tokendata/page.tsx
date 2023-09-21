@@ -2,18 +2,30 @@ import React from "react";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 
-// Use the RPC endpoint of your choice.
-const umi = createUmi("http://127.0.0.1:8899").use(mplTokenMetadata());
-
 import { generateSigner, percentAmount } from "@metaplex-foundation/umi";
 import {
   createNft,
   fetchDigitalAsset,
 } from "@metaplex-foundation/mpl-token-metadata";
 
+const umi = createUmi("https://api.devnet.solana.com").use(mplTokenMetadata());
+
+const myUris = await umi.uploader.upload(myFiles, {
+  signal: myAbortSignal,
+  onProgress: (percent) => {
+    console.log(`${percent * 100}% uploaded...`);
+  },
+});
+
+const myUri = await umi.uploader.uploadJson({ name: "John", age: 42 });
+
+// Use the RPC endpoint of your choice.
+// selecting solana devnet
+
 const mint = generateSigner(umi);
 
 const page = async () => {
+  // the createNft stuff?
   await createNft(umi, {
     mint,
     name: "My NFT",
