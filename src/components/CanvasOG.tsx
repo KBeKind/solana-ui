@@ -1,9 +1,16 @@
 "use client";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useRef } from "react";
 
-const CanvasOG = (props) => {
-  const { textObject, ...rest } = props;
+interface CanvasOGProps {
+  textObject: {
+    customer: string;
+    vendor: string;
+    description: string;
+  };
+}
+
+const CanvasOG = ({ textObject, ...rest }: CanvasOGProps) => {
   const ref = useRef();
 
   const draw = (aTextObject, context /*,count: number*/) => {
@@ -11,22 +18,27 @@ const CanvasOG = (props) => {
     // const delta = count % 500;
     context.fillStyle = "white";
     context.font = "30px Arial";
-    context.fillRect(0, 0, 500, 500);
+    context.fillRect(0, 0, 500, 700);
     context.fillStyle = "black";
-    context.fillText(`${aTextObject.customer}`, 10 /*+ delta*/, 50);
-    context.fillText(`${aTextObject.vendor}`, 10 /*+ delta*/, 100);
-    context.fillText(`${aTextObject.description}`, 10 /*+ delta*/, 150);
+    context.fillText(`Customer: ${aTextObject.customer}`, 10 /*+ delta*/, 50);
+    context.fillText(`Vendor: ${aTextObject.vendor}`, 10 /*+ delta*/, 100);
+    context.fillText(
+      `Description: ${aTextObject.description}`,
+      10 /*+ delta*/,
+      150
+    );
   };
 
   useEffect(() => {
     const theCanvas = ref.current;
+    // the below commented out code allows for creation of a file
     // const dataURL = theCanvas.toDataURL("image/jpeg", 0.5);
     // console.log(dataURL);
     const context = theCanvas.getContext("2d");
     draw(textObject, context);
     const dataURL = theCanvas.toDataURL("image/jpeg", 0.5);
     console.log(dataURL);
-  }, []);
+  }, [textObject]);
 
   return <canvas className="bg-white" ref={ref} {...rest} />;
 };
