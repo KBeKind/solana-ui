@@ -23,7 +23,7 @@ const page = () => {
       ></ReceiptForm>
       <div className="bg-slate-500 p-8">
         {formSubmitted && (
-          <CanvasOG textObject={textObject} width="500" height="500"></CanvasOG>
+          <CanvasOG textObject={textObject} width="700" height="500"></CanvasOG>
         )}
       </div>
     </div>

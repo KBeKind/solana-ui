@@ -1,7 +1,16 @@
 "use client";
 import { useState } from "react";
+
+interface ReceiptFormCallbackInterface {
+  setFormSubmitted: Function;
+  setTextObject: Function;
+}
+
 // receive two callback functions to set the data for the image
-const ReceiptForm = ({ setFormSubmitted, setTextObject }) => {
+const ReceiptForm = ({
+  setFormSubmitted,
+  setTextObject,
+}: ReceiptFormCallbackInterface) => {
   const [customer, setCustomer] = useState("");
   const [vendor, setVendor] = useState("");
   const [description, setDescription] = useState("");
