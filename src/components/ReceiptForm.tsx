@@ -1,15 +1,15 @@
 "use client";
-import { todo } from "node:test";
 import { useState } from "react";
-
-const ReceiptForm = () => {
+// receive two callback functions to set the data for the image
+const ReceiptForm = ({ setFormSubmitted, setTextObject }) => {
   const [customer, setCustomer] = useState("");
   const [vendor, setVendor] = useState("");
   const [description, setDescription] = useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //todo:  NEED TO MAKE THE NFT RECEIPT OR MAKE AN IMAGE OR PASS TO SOMETHING
+    setFormSubmitted(true);
+    setTextObject({ customer, vendor, description });
   };
 
   return (
