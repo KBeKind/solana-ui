@@ -8,7 +8,15 @@ import {
   fetchDigitalAsset,
 } from "@metaplex-foundation/mpl-token-metadata";
 
+//not sure which uploader to use yet.  bundlr should work with arweave
+import { BundlrUploader } from "@metaplex-foundation/umi-uploader-bundlr";
+
+// Use the RPC endpoint of your choice.
+// selecting solana devnet
 const umi = createUmi("https://api.devnet.solana.com").use(mplTokenMetadata());
+
+//using the umi uploader interface
+// upload: ((files: GenericFile[], options?: UploaderUploadOptions) => Promise<string[]>)
 
 const myUris = await umi.uploader.upload(myFiles, {
   signal: myAbortSignal,
@@ -17,10 +25,8 @@ const myUris = await umi.uploader.upload(myFiles, {
   },
 });
 
+// URI is the json meta data location
 const myUri = await umi.uploader.uploadJson({ name: "John", age: 42 });
-
-// Use the RPC endpoint of your choice.
-// selecting solana devnet
 
 const mint = generateSigner(umi);
 
