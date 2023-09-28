@@ -31,9 +31,7 @@ const CanvasOG = ({ textObject, ...rest }: CanvasOGProps) => {
 
   useEffect(() => {
     const theCanvas = ref.current;
-    // the below commented out code allows for creation of a file
-    // const dataURL = theCanvas.toDataURL("image/jpeg", 0.5);
-    // console.log(dataURL);
+
     const context = theCanvas.getContext("2d");
     draw(textObject, context);
     const dataURL = theCanvas.toDataURL("image/jpeg", 0.5);
