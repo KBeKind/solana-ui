@@ -1,19 +1,50 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { mintV1, TokenStandard } from "@metaplex-foundation/mpl-token-metadata";
-import { generateSigner, percentAmount } from "@metaplex-foundation/umi";
-import {
+import { generateSigner, percentAmount, publicKey, signerIdentity, signerPayer } from "@metaplex-foundation/umi";
+import { 
   createNft,
   fetchDigitalAsset,
 } from "@metaplex-foundation/mpl-token-metadata";
+import { Signer} from "@metaplex-foundation/umi";
 
 // Uploader Bundler is for Arweave
 import { bundlrUploader, createBundlrUploader, } from "@metaplex-foundation/umi-uploader-bundlr";
+import { fromWeb3JsPublicKey } from "@metaplex-foundation/umi-web3js-adapters";
+import Web3 from "@solana/web3.js";
+
+
+
+
+
+// using the solana web3 to create a public key from a string
+// can use the publicKey helper method
+let testPubKey = new Web3.PublicKey("6NorYH8QygxoYQ8X4y2aPetNc5nPrsW1YwwG1AbjbBPN");
+
+
+// converting the standard web3 solana public key to a UMI compatable public key
+// For public keys.
+let testUmiPubKey = fromWeb3JsPublicKey(testPubKey);
+
+
+// createing a UMI signer based off of the UMI style public key
+let testUmiSigner = {
+  publicKey: testUmiPubKey,
+  signMessage: ,
+  signTransaction: ,
+  signAllTransactions: ,
+}
 
 const umi = createUmi("https://api.devnet.solana.com")
+// .use(signerIdentity())
+ .use(signerPayer(testUmiSigner))
 .use(bundlrUploader(...));
 
 
+const mySigner = generateSigner(umi);
+
+mySigner.publicKey = 
+mySigner.secretKey = 
 
 // Signers
 // A signer is a public key that can sign transactions and messages. This enables transactions to be signed by the required accounts and wallets to prove their identity by signing messages. In Umi, it is represented by the following interface.
@@ -27,13 +58,7 @@ const umi = createUmi("https://api.devnet.solana.com")
 // You may generate a new signer cryptographically using the generateSigner
 //  helper method. Under the hood, this method uses the 
 // generateKeypair method of the EdDSA interface as described in the next section.
-const mySigner = generateSigner(umi);
 
-// The following helper functions can also be used to manage signers.
-// Check if the provided value is a Signer.
-isSigner(mySigner);
-// Deduplicate an array of signers by public key.
-uniqueSigners(mySigners);
 
 
 
