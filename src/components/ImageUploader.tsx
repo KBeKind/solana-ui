@@ -1,5 +1,3 @@
-import React from "react";
-
 import fs from "fs";
 import Arweave from "arweave";
 
@@ -13,7 +11,7 @@ import Arweave from "arweave";
   });
 
   // Upload image to Arweave
-  const data = fs.readFileSync("./code/nfts/arweave-upload/lowres-dog.png");
+  const data = fs.readFileSync("code/nfts/arweave-upload/lowres-dog.png");
 
   const transaction = await arweave.createTransaction({
     data: data,

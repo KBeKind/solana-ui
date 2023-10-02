@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 
 interface CanvasOGProps {
@@ -8,9 +8,16 @@ interface CanvasOGProps {
     vendor: string;
     description: string;
   };
+  setImageBlob: Function;
+  setImageBlobSet: Function;
 }
 
-const CanvasOG = ({ textObject, ...rest }: CanvasOGProps) => {
+const CanvasOG = ({
+  textObject,
+  setImageBlob,
+  setImageBlobSet,
+  ...rest
+}: CanvasOGProps) => {
   const ref = useRef();
 
   const draw = (aTextObject, context /*,count: number*/) => {
@@ -34,11 +41,20 @@ const CanvasOG = ({ textObject, ...rest }: CanvasOGProps) => {
 
     const context = theCanvas.getContext("2d");
     draw(textObject, context);
-    const dataURL = theCanvas.toDataURL("image/jpeg", 0.5);
-    console.log(dataURL);
+
+    theCanvas.toBlob(
+      (blob: any) => {
+        const newImage = document.createElement("img");
+        const url = URL.createObjectURL(blob);
+        setImageBlob(url);
+      },
+      "image/jpeg",
+      0.95
+    ); // converting to jpeg at 95% quality
+    setImageBlobSet(true);
   }, [textObject]);
 
-  return <canvas className="bg-white" ref={ref} {...rest} />;
+  return <canvas className="invisible" ref={ref} {...rest} />;
 };
 
 export default CanvasOG;
