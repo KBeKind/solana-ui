@@ -54,7 +54,7 @@ const CanvasOG = ({
     setImageBlobSet(true);
   }, [textObject]);
 
-  return <canvas className="invisible" ref={ref} {...rest} />;
+  return <canvas className="" ref={ref} {...rest} />;
 };
 
 export default CanvasOG;
