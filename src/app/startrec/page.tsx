@@ -24,7 +24,7 @@ const page = () => {
         setFormSubmitted={setFormSubmitted}
         setTextObject={setTextObject}
       ></ReceiptForm>
-      <div className="bg-slate-500 p-8">
+      <div className="hidden">
         {formSubmitted && (
           <CanvasOG
             textObject={textObject}
