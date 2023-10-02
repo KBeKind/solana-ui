@@ -18,6 +18,7 @@ const Home: NextPage = () => {
   const [balance, setBalance] = useState(0);
   const [address, setAddress] = useState("");
   const [isExecutable, setisExecutable] = useState(false);
+  const [imageBlob, setImageBlob] = useState();
 
   //WALLET ADDRESS LOOKUP
 
