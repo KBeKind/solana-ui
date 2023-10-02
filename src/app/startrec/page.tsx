@@ -5,6 +5,7 @@ import ReceiptForm from "@/components/ReceiptForm";
 import CanvasOG from "@/components/CanvasOG";
 import { useState } from "react";
 import Link from "next/link";
+import ImageUploader from "@/components/ImageUploader";
 
 const page = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -38,6 +39,9 @@ const page = () => {
       <br />
       <div className="bg-slate-500 p-8">
         {imageBlobSet && <img src={imageBlob} width="700" height="500"></img>}
+      </div>
+      <div>
+        <ImageUploader imageBlob={imageBlob}></ImageUploader>
       </div>
     </div>
   );
